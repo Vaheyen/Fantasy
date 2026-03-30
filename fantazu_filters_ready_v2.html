@@ -1,0 +1,2397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Fantazu Fantasy UI</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      background: radial-gradient(circle at top, #173b2f 0%, #0f172a 35%, #0b1220 100%);
+      color: #e5eefb;
+    }
+
+    .container {
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    h1, h2, h3, h4 { margin-top: 0; }
+
+    .app-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .app-title-badge {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      color: white;
+      box-shadow: 0 8px 24px rgba(34,197,94,0.28);
+    }
+
+    .glass {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.22);
+      backdrop-filter: blur(10px);
+    }
+
+    .top-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    input, select, button {
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.16);
+      font-size: 14px;
+      background: rgba(255,255,255,0.1);
+      color: #f8fafc;
+      outline: none;
+    }
+
+    input::placeholder { color: #cbd5e1; }
+    select option { color: #111827; }
+
+    button {
+      cursor: pointer;
+      border: none;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: white;
+      font-weight: bold;
+      box-shadow: 0 8px 20px rgba(34,197,94,0.24);
+    }
+
+    button:hover:enabled { transform: translateY(-1px); }
+
+    button:disabled {
+      background: linear-gradient(135deg, #64748b, #475569);
+      box-shadow: none;
+      cursor: not-allowed;
+      opacity: 0.8;
+    }
+
+    .secondary-btn {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      box-shadow: 0 8px 20px rgba(59,130,246,0.24);
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(110px, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .tight-summary {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .summary-box {
+      padding: 11px;
+      border-radius: 14px;
+    }
+
+    .summary-box strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 12px;
+      color: #bfdbfe;
+      text-transform: uppercase;
+      letter-spacing: 0.35px;
+    }
+
+    .summary-box span {
+      font-size: 17px;
+      font-weight: 800;
+      color: white;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.18fr 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .panel {
+      padding: 18px;
+      border-radius: 20px;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .players {
+      max-height: 620px;
+      overflow-y: auto;
+      border-radius: 16px;
+      padding: 8px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .player-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      margin-bottom: 8px;
+      border-radius: 14px;
+      cursor: pointer;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      transition: 0.15s ease;
+    }
+
+    .player-row:hover {
+      transform: translateY(-1px);
+      background: rgba(255,255,255,0.1);
+    }
+
+    .player-row.selected {
+      background: rgba(34,197,94,0.18);
+      border-color: rgba(74,222,128,0.6);
+      box-shadow: 0 0 0 1px rgba(74,222,128,0.28) inset;
+    }
+
+    .player-row.disabled { opacity: 0.35; }
+
+    .player-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .player-name {
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .player-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-size: 12px;
+      color: #cbd5e1;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.09);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+
+    .filter-wrap {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .filter-box {
+      padding: 10px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .filter-label {
+      display: block;
+      font-size: 11px;
+      color: #bfdbfe;
+      text-transform: uppercase;
+      letter-spacing: 0.35px;
+      margin-bottom: 6px;
+    }
+
+    .range-box {
+      padding: 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .range-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-size: 12px;
+      color: #dbeafe;
+    }
+
+    .range-sliders {
+      position: relative;
+      height: 26px;
+      margin-top: 2px;
+    }
+
+    .range-slider-stack {
+      position: relative;
+      height: 26px;
+    }
+
+    .range-track {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.18);
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    .range-sliders input[type="range"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 26px;
+      padding: 0;
+      margin: 0;
+      background: transparent;
+      border: none;
+      -webkit-appearance: none;
+      appearance: none;
+      pointer-events: none;
+    }
+
+    .range-sliders input[type="range"]::-webkit-slider-runnable-track {
+      height: 4px;
+      background: transparent;
+    }
+
+    .range-sliders input[type="range"]::-moz-range-track {
+      height: 4px;
+      background: transparent;
+    }
+
+    .range-sliders input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      margin-top: -7px;
+      border-radius: 50%;
+      border: 2px solid white;
+      background: #22c55e;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.28);
+      pointer-events: auto;
+      cursor: pointer;
+    }
+
+    .range-sliders input[type="range"]::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid white;
+      background: #22c55e;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.28);
+      pointer-events: auto;
+      cursor: pointer;
+    }
+
+    .empty-state {
+      padding: 18px;
+      text-align: center;
+      color: #cbd5e1;
+      font-size: 13px;
+    }
+    .warning {
+      color: #fecaca;
+      font-size: 13px;
+      margin-top: 10px;
+    }
+
+    .note {
+      color: #cbd5e1;
+      font-size: 12px;
+      margin-top: 10px;
+      line-height: 1.5;
+    }
+
+    .squad-groups {
+      display: grid;
+      gap: 14px;
+    }
+
+    .pos-group {
+      padding: 12px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .pos-group h4 {
+      margin: 0 0 10px 0;
+      color: #86efac;
+      font-size: 14px;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    .slot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      min-height: 56px;
+      padding: 10px;
+      margin-bottom: 8px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.05);
+      border: 1px dashed rgba(255,255,255,0.14);
+    }
+
+    .slot.filled {
+      border-style: solid;
+      background: rgba(59,130,246,0.12);
+      border-color: rgba(96,165,250,0.3);
+    }
+
+    .slot-empty {
+      color: #94a3b8;
+      font-size: 13px;
+    }
+
+    .slot-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .slot-remove {
+      padding: 7px 10px;
+      font-size: 12px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .field-outer,
+    .bench-wrap,
+    .league-wrap,
+    .viewer-wrap {
+      max-width: 620px;
+      margin: 12px auto 0;
+    }
+
+    .pitch-wrap {
+      width: 100%;
+      aspect-ratio: 0.72 / 1;
+      padding: 18px;
+      border-radius: 28px;
+      background: linear-gradient(180deg, #1b9f49 0%, #157a38 100%);
+      border: 1px solid rgba(255,255,255,0.16);
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,0.04), 0 12px 28px rgba(0,0,0,0.25);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pitch-lines {
+      position: absolute;
+      inset: 16px;
+      border: 2px solid rgba(255,255,255,0.34);
+      border-radius: 20px;
+      pointer-events: none;
+    }
+
+    .pitch-half-line {
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      top: 50%;
+      height: 2px;
+      background: rgba(255,255,255,0.32);
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    .pitch-center-circle {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 110px;
+      height: 110px;
+      border: 2px solid rgba(255,255,255,0.28);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .pitch-center-dot {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.75);
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .pitch-box-top,
+    .pitch-box-bottom {
+      position: absolute;
+      left: 50%;
+      width: 46%;
+      height: 14%;
+      border: 2px solid rgba(255,255,255,0.28);
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+
+    .pitch-box-top {
+      top: 16px;
+      border-bottom: none;
+      border-bottom-left-radius: 18px;
+      border-bottom-right-radius: 18px;
+    }
+
+    .pitch-box-bottom {
+      bottom: 16px;
+      border-top: none;
+      border-top-left-radius: 18px;
+      border-top-right-radius: 18px;
+    }
+
+    .pitch-layout {
+      position: relative;
+      z-index: 2;
+      height: 100%;
+      display: grid;
+      grid-template-rows: 0.95fr 1fr 1fr 0.92fr;
+      align-items: center;
+      justify-items: center;
+      gap: 4px;
+    }
+
+    .pitch-row {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: nowrap;
+    }
+
+    .kit-card {
+      width: 98px;
+      position: relative;
+      transition: 0.15s ease;
+      flex: 0 0 auto;
+    }
+
+    .kit-card.clickable { cursor: pointer; }
+
+    .kit-card.clickable:hover {
+      transform: translateY(-2px);
+    }
+
+    .kit-card.selected-swap .kit-shell {
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.5), 0 12px 24px rgba(0,0,0,0.26);
+    }
+
+    .kit-shell {
+      position: relative;
+      min-height: 126px;
+      border-radius: 20px 20px 16px 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.28);
+      background: rgba(255,255,255,0.12);
+    }
+
+    .shirt-top {
+      position: relative;
+      height: 84px;
+      clip-path: polygon(5% 16%, 24% 8%, 31% 0%, 69% 0%, 76% 8%, 95% 16%, 100% 43%, 90% 51%, 86% 94%, 64% 94%, 64% 100%, 36% 100%, 36% 94%, 14% 94%, 10% 51%, 0% 43%);
+      box-shadow: inset 0 -10px 16px rgba(0,0,0,0.12);
+    }
+
+    .shirt-collar {
+      position: absolute;
+      left: 50%;
+      top: 5px;
+      width: 28px;
+      height: 16px;
+      background: rgba(255,255,255,0.22);
+      border-bottom-left-radius: 14px;
+      border-bottom-right-radius: 14px;
+      transform: translateX(-50%);
+    }
+
+    .kit-logo-img {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      width: 22px;
+      height: 22px;
+      object-fit: contain;
+      background: rgba(255,255,255,0.92);
+      border-radius: 50%;
+      padding: 2px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.18);
+    }
+
+    .badge-c {
+      position: absolute;
+      right: 8px;
+      top: 8px;
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      font-weight: 900;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #111827;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.18);
+      background: #facc15;
+    }
+
+    .kit-body {
+      padding: 8px 8px 10px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.06));
+      text-align: center;
+      min-height: 48px;
+    }
+
+    .kit-name {
+      font-weight: 900;
+      font-size: 11px;
+      line-height: 1.15;
+      margin-bottom: 4px;
+      color: white;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.22);
+    }
+
+    .kit-team {
+      font-size: 9px;
+      opacity: 0.96;
+      margin-bottom: 4px;
+    }
+
+    .kit-stats {
+      font-size: 9px;
+      line-height: 1.32;
+      opacity: 0.98;
+    }
+
+    .bench-crossed {
+      text-decoration: line-through;
+      text-decoration-thickness: 1.5px;
+      opacity: 0.8;
+    }
+
+
+    .card-action-btn {
+      margin-top: 6px;
+      padding: 5px 8px;
+      font-size: 10px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.16);
+      box-shadow: none;
+      border: 1px solid rgba(255,255,255,0.16);
+    }
+
+    .player-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 8, 20, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 9999;
+    }
+
+    .player-modal-card {
+      width: min(520px, 100%);
+      border-radius: 22px;
+      padding: 18px;
+    }
+
+    .player-modal-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+
+    .player-modal-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .player-modal-item {
+      padding: 10px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .player-modal-item strong {
+      display: block;
+      color: #bfdbfe;
+      font-size: 11px;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.35px;
+    }
+    .controls-box,
+    .formation-box,
+    .league-box,
+    .viewer-box {
+      padding: 16px;
+      border-radius: 18px;
+      margin-top: 16px;
+    }
+
+    .helper-line {
+      font-size: 13px;
+      color: #dbeafe;
+      line-height: 1.5;
+    }
+
+    .bench-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .bench-grid .kit-card {
+      width: 100%;
+      max-width: 104px;
+      justify-self: center;
+    }
+
+    .bench-grid .kit-shell { min-height: 118px; }
+    .bench-grid .shirt-top { height: 76px; }
+
+    .league-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .league-team-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 10px;
+      align-items: center;
+      padding: 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .league-team-row.active {
+      background: rgba(59,130,246,0.16);
+      border-color: rgba(96,165,250,0.32);
+    }
+
+    .league-team-name {
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .league-team-points {
+      font-weight: 900;
+      color: #fde68a;
+      min-width: 78px;
+      text-align: right;
+    }
+
+    .mini-heading {
+      margin-bottom: 10px;
+      color: #bfdbfe;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+
+    .danger-btn {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      box-shadow: 0 8px 20px rgba(239,68,68,0.2);
+    }
+
+    .auth-wrap {
+      max-width: 460px;
+      margin: 28px auto 0;
+    }
+
+    .auth-card {
+      padding: 22px;
+      border-radius: 22px;
+    }
+
+    .auth-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .auth-tab {
+      text-align: center;
+      padding: 11px 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #dbeafe;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .auth-tab.active {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: white;
+      box-shadow: 0 8px 20px rgba(34,197,94,0.22);
+    }
+
+    .auth-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .auth-grid.two {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .auth-label {
+      font-size: 12px;
+      color: #bfdbfe;
+      margin-bottom: 5px;
+      display: block;
+      text-transform: uppercase;
+      letter-spacing: 0.35px;
+    }
+
+    .auth-note {
+      font-size: 12px;
+      color: #cbd5e1;
+      line-height: 1.5;
+      margin-top: 10px;
+    }
+
+    .auth-message {
+      min-height: 20px;
+      margin-top: 12px;
+      font-size: 13px;
+    }
+
+    .auth-message.error { color: #fecaca; }
+    .auth-message.success { color: #bbf7d0; }
+
+
+    @media (max-width: 860px) {
+      .filter-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .player-modal-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 1020px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .summary {
+        grid-template-columns: repeat(2, minmax(120px, 1fr));
+      }
+
+      .tight-summary {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 760px) {
+      .bench-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .field-outer,
+      .bench-wrap,
+      .league-wrap,
+      .viewer-wrap {
+        max-width: 100%;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .summary {
+        grid-template-columns: 1fr;
+      }
+
+      .league-team-row {
+        grid-template-columns: 1fr;
+      }
+
+      .tight-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .kit-card {
+        width: 84px;
+      }
+
+      .kit-shell {
+        min-height: 114px;
+      }
+
+      .shirt-top {
+        height: 68px;
+      }
+
+      .pitch-row {
+        gap: 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="app-title">
+      <div class="app-title-badge">FZ</div>
+      <div>
+        <h1 style="margin:0;">Fantazu</h1>
+        <div style="color:#bfdbfe;">Fantasy squad builder, captaincy, transfer mode, league view</div>
+      </div>
+    </div>
+
+    <div id="app"></div>
+  </div>
+
+  <script>
+    const budget = 1000;
+    const squadLimits = { GK: 2, DEF: 5, MID: 5, FWD: 3 };
+    const maxPerTeam = 4;
+
+    const starterRules = {
+      total: 11,
+      GK: 1,
+      minDEF: 3,
+      minMID: 2,
+      minFWD: 1
+    };
+
+    const possibleFormations = [
+      { DEF: 3, MID: 4, FWD: 3 },
+      { DEF: 3, MID: 5, FWD: 2 },
+      { DEF: 4, MID: 4, FWD: 2 },
+      { DEF: 4, MID: 3, FWD: 3 },
+      { DEF: 4, MID: 5, FWD: 1 },
+      { DEF: 5, MID: 3, FWD: 2 },
+      { DEF: 5, MID: 4, FWD: 1 },
+      { DEF: 5, MID: 2, FWD: 3 }
+    ];
+
+    const teamStyle = {
+      "Real Madrid": {
+        colors: ["#ffffff", "#d9b34a"],
+        logo: "https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg"
+      },
+      "Barcelona": {
+        colors: ["#1f4aa8", "#8c1b4d"],
+        logo: "https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg"
+      },
+      "PSG": {
+        colors: ["#0b2d6b", "#c8102e"],
+        logo: "https://upload.wikimedia.org/wikipedia/en/a/a7/Paris_Saint-Germain_F.C..svg"
+      },
+      "Bayern": {
+        colors: ["#d91e36", "#1e5fbf"],
+        logo: "https://1000logos.net/wp-content/uploads/2018/05/Bayern-Munchen-Logo.png"
+      },
+      "Liverpool": {
+        colors: ["#c8102e", "#7a1020"],
+        logo: "https://1000logos.net/wp-content/uploads/2017/04/Logo-Liverpool.png"
+      },
+      "Arsenal": {
+        colors: ["#d81920", "#9b1219"],
+        logo: "https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg"
+      },
+      "Atletico": {
+        colors: ["#d81e34", "#1f4fb8"],
+        logo: "https://1000logos.net/wp-content/uploads/2018/05/Atletico-Madrid-Logo.png"
+      },
+      "Sporting": {
+        colors: ["#0d8b3d", "#0a5e2a"],
+        logo: "https://cdn.brandfetch.io/idNWw1XaNT/w/820/h/1082/theme/dark/logo.png?c=1bxid64Mup7aczewSAYMX&t=1766960749811"
+      }
+    };
+
+    const players = [
+       { id: 1,name: "Thibaut Courtois",       team: "Real Madrid", pos: "GK",  price: 10 },
+  { id: 2,  name: "Andriy Lunin",            team: "Real Madrid", pos: "GK",  price: 6 },
+  { id: 3,  name: "Dani Carvajal",           team: "Real Madrid", pos: "DEF", price: 7 },
+  { id: 4,  name: "Éder Militão",            team: "Real Madrid", pos: "DEF", price: 8 },
+  { id: 5,  name: "David Alaba",             team: "Real Madrid", pos: "DEF", price: 8 },
+  { id: 6,  name: "Trent Alexander-Arnold",  team: "Real Madrid", pos: "DEF", price: 9 },
+  { id: 7,  name: "Raúl Asencio",            team: "Real Madrid", pos: "DEF", price: 7 },
+  { id: 8,  name: "Álvaro Carreras",         team: "Real Madrid", pos: "DEF", price: 8 },
+  { id: 9,  name: "Fran García",             team: "Real Madrid", pos: "DEF", price: 7 },
+  { id: 10, name: "Antonio Rüdiger",         team: "Real Madrid", pos: "DEF", price: 8 },
+  { id: 11, name: "Ferland Mendy",           team: "Real Madrid", pos: "DEF", price: 7 },
+  { id: 12, name: "Dean Huijsen",            team: "Real Madrid", pos: "DEF", price: 8 },
+  { id: 13, name: "Jude Bellingham",         team: "Real Madrid", pos: "MID", price: 10 },
+  { id: 14, name: "Eduardo Camavinga",       team: "Real Madrid", pos: "MID", price: 9 },
+  { id: 15, name: "Federico Valverde",       team: "Real Madrid", pos: "MID", price: 9 },
+  { id: 16, name: "Aurélien Tchouaméni",     team: "Real Madrid", pos: "MID", price: 9 },
+  { id: 17, name: "Arda Güler",              team: "Real Madrid", pos: "MID", price: 9 },
+  { id: 18, name: "Daniel Ceballos",         team: "Real Madrid", pos: "MID", price: 8 },
+  { id: 19, name: "Vinícius Júnior",         team: "Real Madrid", pos: "FWD", price: 10 },
+  { id: 20, name: "Kylian Mbappé",           team: "Real Madrid", pos: "FWD", price: 10 },
+  { id: 21, name: "Rodrygo Goes",            team: "Real Madrid", pos: "FWD", price: 9 },
+  { id: 22, name: "Gonzalo García Torres",   team: "Real Madrid", pos: "FWD", price: 8 },
+  { id: 23, name: "Brahim Díaz",             team: "Real Madrid", pos: "FWD", price: 8 },
+  { id: 24, name: "Franco Mastantuono",      team: "Real Madrid", pos: "FWD", price: 9 },
+
+  {id:25,name:"Joan García",team:"Barcelona",pos:"GK",price:8},
+  {id:26,name:"Wojciech Szczęsny",team:"Barcelona",pos:"GK",price:8},
+  {id:27,name:"João Cancelo",team:"Barcelona",pos:"DEF",price:8},
+  {id:28,name:"Alejandro Balde",team:"Barcelona",pos:"DEF",price:8},
+  {id:29,name:"Ronald Araújo",team:"Barcelona",pos:"DEF",price:8},
+  {id:30,name:"Pau Cubarsí",team:"Barcelona",pos:"DEF",price:8},
+  {id:31,name:"Andreas Christensen",team:"Barcelona",pos:"DEF",price:7},
+  {id:32,name:"Gerard Martín",team:"Barcelona",pos:"DEF",price:7},
+  {id:33,name:"Jules Koundé",team:"Barcelona",pos:"DEF",price:8},
+  {id:34,name:"Eric García",team:"Barcelona",pos:"DEF",price:7},
+  {id:35,name:"Gavi",team:"Barcelona",pos:"MID",price:9},
+  {id:36,name:"Pedri",team:"Barcelona",pos:"MID",price:10},
+  {id:37,name:"Fermín López",team:"Barcelona",pos:"MID",price:8},
+  {id:38,name:"Marc Casadó",team:"Barcelona",pos:"MID",price:8},
+  {id:39,name:"Dani Olmo",team:"Barcelona",pos:"MID",price:9},
+  {id:40,name:"Frenkie de Jong",team:"Barcelona",pos:"MID",price:9},
+  {id:41,name:"Marc Bernal",team:"Barcelona",pos:"MID",price:8},
+  {id:42,name:"Ferran Torres",team:"Barcelona",pos:"FWD",price:8},
+  {id:43,name:"Robert Lewandowski",team:"Barcelona",pos:"FWD",price:10},
+  {id:44,name:"Lamine Yamal",team:"Barcelona",pos:"FWD",price:10},
+  {id:45,name:"Raphinha",team:"Barcelona",pos:"FWD",price:9},
+  {id:46,name:"Marcus Rashford",team:"Barcelona",pos:"FWD",price:9},
+  {id:47,name:"Roony Bardghji",team:"Barcelona",pos:"FWD",price:8},
+
+  {id:48,name:"Lucas Chevalier",team:"PSG",pos:"GK",price:8},
+  {id:49,name:"Matvey Safonov",team:"PSG",pos:"GK",price:8},
+  {id:50,name:"Renato Marin",team:"PSG",pos:"GK",price:7},
+  {id:51,name:"Achraf Hakimi",team:"PSG",pos:"DEF",price:8},
+  {id:52,name:"Marquinhos",team:"PSG",pos:"DEF",price:8},
+  {id:53,name:"Illia Zabarnyi",team:"PSG",pos:"DEF",price:8},
+  {id:54,name:"Lucas Hernández",team:"PSG",pos:"DEF",price:8},
+  {id:55,name:"Nuno Mendes",team:"PSG",pos:"DEF",price:9},
+  {id:56,name:"Lucas Beraldo",team:"PSG",pos:"DEF",price:8},
+  {id:57,name:"Willian Pacho",team:"PSG",pos:"DEF",price:8},
+  {id:58,name:"Fabián Ruiz",team:"PSG",pos:"MID",price:8},
+  {id:59,name:"Vitinha",team:"PSG",pos:"MID",price:9},
+  {id:60,name:"Kang-In Lee",team:"PSG",pos:"MID",price:8},
+  {id:61,name:"Warren Zaïre-Emery",team:"PSG",pos:"MID",price:8},
+  {id:62,name:"João Neves",team:"PSG",pos:"MID",price:9},
+  {id:63,name:"Senny Mayulu",team:"PSG",pos:"MID",price:8},
+  {id:64,name:"Désiré Doué",team:"PSG",pos:"MID",price:9},
+  {id:65,name:"Dro Fernández",team:"PSG",pos:"MID",price:7},
+  {id:66,name:"Khvicha Kvaratskhelia",team:"PSG",pos:"FWD",price:10},
+  {id:67,name:"Gonçalo Ramos",team:"PSG",pos:"FWD",price:8},
+  {id:68,name:"Ousmane Dembélé",team:"PSG",pos:"FWD",price:10},
+  {id:69,name:"Bradley Barcola",team:"PSG",pos:"FWD",price:9},
+  {id:70,name:"Ibrahim Mbaye",team:"PSG",pos:"FWD",price:7},
+  {id:71,name:"Quentin Ndjantou",team:"PSG",pos:"FWD",price:7},
+
+     
+  {id:72,name:"Manuel Neuer",team:"Bayern",pos:"GK",price:9},
+  {id:73,name:"Sven Ulreich",team:"Bayern",pos:"GK",price:7},
+  {id:74,name:"Jonas Urbig",team:"Bayern",pos:"GK",price:8},
+  {id:75,name:"Leon Klanac",team:"Bayern",pos:"GK",price:6},
+  {id:76,name:"Dayot Upamecano",team:"Bayern",pos:"DEF",price:8},
+  {id:77,name:"Minjae Kim",team:"Bayern",pos:"DEF",price:8},
+  {id:78,name:"Jonathan Tah",team:"Bayern",pos:"DEF",price:8},
+  {id:79,name:"Alphonso Davies",team:"Bayern",pos:"DEF",price:9},
+  {id:80,name:"Hiroki Ito",team:"Bayern",pos:"DEF",price:7},
+  {id:81,name:"Raphaël Guerreiro",team:"Bayern",pos:"DEF",price:8},
+  {id:82,name:"Josip Stanišić",team:"Bayern",pos:"DEF",price:7},
+  {id:83,name:"Joshua Kimmich",team:"Bayern",pos:"MID",price:9},
+  {id:84,name:"Leon Goretzka",team:"Bayern",pos:"MID",price:8},
+  {id:85,name:"Jamal Musiala",team:"Bayern",pos:"MID",price:10},
+  {id:86,name:"Tom Bischof",team:"Bayern",pos:"MID",price:7},
+  {id:87,name:"Konrad Laimer",team:"Bayern",pos:"MID",price:8},
+  {id:88,name:"Lennart Karl",team:"Bayern",pos:"MID",price:7},
+  {id:89,name:"Aleksandar Pavlović",team:"Bayern",pos:"MID",price:8},
+  {id:90,name:"Serge Gnabry",team:"Bayern",pos:"FWD",price:8},
+  {id:91,name:"Harry Kane",team:"Bayern",pos:"FWD",price:10},
+  {id:92,name:"Nicolas Jackson",team:"Bayern",pos:"FWD",price:8},
+  {id:93,name:"Luis Díaz",team:"Bayern",pos:"FWD",price:9},
+  {id:94,name:"Michael Olise",team:"Bayern",pos:"FWD",price:9},
+
+  {id:95,name:"Alisson Becker",team:"Liverpool",pos:"GK",price:10},
+  {id:96,name:"Giorgi Mamardashvili",team:"Liverpool",pos:"GK",price:9},
+  {id:97,name:"Freddie Woodman",team:"Liverpool",pos:"GK",price:7},
+  {id:98,name:"Armin Pecsi",team:"Liverpool",pos:"GK",price:6},
+  {id:99,name:"Joe Gomez",team:"Liverpool",pos:"DEF",price:8},
+  {id:100,name:"Virgil van Dijk",team:"Liverpool",pos:"DEF",price:9},
+  {id:101,name:"Ibrahima Konaté",team:"Liverpool",pos:"DEF",price:8},
+  {id:102,name:"Milos Kerkez",team:"Liverpool",pos:"DEF",price:8},
+  {id:103,name:"Conor Bradley",team:"Liverpool",pos:"DEF",price:7},
+  {id:104,name:"Jeremie Frimpong",team:"Liverpool",pos:"DEF",price:8},
+  {id:105,name:"Andy Robertson",team:"Liverpool",pos:"DEF",price:8},
+  {id:106,name:"Giovanni Leoni",team:"Liverpool",pos:"DEF",price:7},
+  {id:107,name:"Alexis Mac Allister",team:"Liverpool",pos:"MID",price:9},
+  {id:108,name:"Florian Wirtz",team:"Liverpool",pos:"MID",price:10},
+  {id:109,name:"Ryan Gravenberch",team:"Liverpool",pos:"MID",price:9},
+  {id:110,name:"Dominik Szoboszlai",team:"Liverpool",pos:"MID",price:8},
+  {id:111,name:"Curtis Jones",team:"Liverpool",pos:"MID",price:8},
+  {id:112,name:"Wataru Endo",team:"Liverpool",pos:"MID",price:7},
+  {id:113,name:"Mohamed Salah",team:"Liverpool",pos:"FWD",price:10},
+  {id:114,name:"Cody Gakpo",team:"Liverpool",pos:"FWD",price:9},
+  {id:115,name:"Alexander Isak",team:"Liverpool",pos:"FWD",price:10},
+  {id:116,name:"Hugo Ekitike",team:"Liverpool",pos:"FWD",price:9},
+  {id:117,name:"Federico Chiesa",team:"Liverpool",pos:"FWD",price:8},
+
+  {id:118,name:"David Raya",team:"Arsenal",pos:"GK",price:8},
+  {id:119,name:"Kepa Arrizabalaga",team:"Arsenal",pos:"GK",price:8},
+  {id:120,name:"Tommy Setford",team:"Arsenal",pos:"GK",price:7},
+  {id:121,name:"William Saliba",team:"Arsenal",pos:"DEF",price:9},
+  {id:122,name:"Cristhian Mosquera",team:"Arsenal",pos:"DEF",price:8},
+  {id:123,name:"Ben White",team:"Arsenal",pos:"DEF",price:8},
+  {id:124,name:"Piero Hincapié",team:"Arsenal",pos:"DEF",price:8},
+  {id:125,name:"Gabriel Magalhães",team:"Arsenal",pos:"DEF",price:8},
+  {id:126,name:"Jurrien Timber",team:"Arsenal",pos:"DEF",price:8},
+  {id:127,name:"Riccardo Calafiori",team:"Arsenal",pos:"DEF",price:8},
+  {id:128,name:"Myles Lewis-Skelly",team:"Arsenal",pos:"DEF",price:8},
+  {id:129,name:"Martin Ødegaard",team:"Arsenal",pos:"MID",price:9},
+  {id:130,name:"Declan Rice",team:"Arsenal",pos:"MID",price:9},
+  {id:131,name:"Martin Zubimendi",team:"Arsenal",pos:"MID",price:9},
+  {id:132,name:"Mikel Merino",team:"Arsenal",pos:"MID",price:8},
+  {id:133,name:"Christian Nørgaard",team:"Arsenal",pos:"MID",price:8},
+  {id:134,name:"Ethan Nwaneri",team:"Arsenal",pos:"MID",price:8},
+  {id:135,name:"Eberechi Eze",team:"Arsenal",pos:"MID",price:9},
+  {id:136,name:"Max Dowman",team:"Arsenal",pos:"MID",price:7},
+  {id:137,name:"Bukayo Saka",team:"Arsenal",pos:"FWD",price:10},
+  {id:138,name:"Viktor Gyökeres",team:"Arsenal",pos:"FWD",price:10},
+  {id:139,name:"Kai Havertz",team:"Arsenal",pos:"FWD",price:9},
+  {id:140,name:"Gabriel Martinelli",team:"Arsenal",pos:"FWD",price:8},
+  {id:141,name:"Leandro Trossard",team:"Arsenal",pos:"FWD",price:8},
+  {id:142,name:"Noni Madueke",team:"Arsenal",pos:"FWD",price:8},
+
+  {id:143,name:"Juan Musso",team:"Atletico",pos:"GK",price:8},
+  {id:144,name:"Jan Oblak",team:"Atletico",pos:"GK",price:9},
+  {id:145,name:"José María Giménez",team:"Atletico",pos:"DEF",price:8},
+  {id:146,name:"Matteo Ruggeri",team:"Atletico",pos:"DEF",price:8},
+  {id:147,name:"Clément Lenglet",team:"Atletico",pos:"DEF",price:8},
+  {id:148,name:"Nahuel Molina",team:"Atletico",pos:"DEF",price:8},
+  {id:149,name:"Dávid Hancko",team:"Atletico",pos:"DEF",price:8},
+  {id:150,name:"Marc Pubill",team:"Atletico",pos:"DEF",price:7},
+  {id:151,name:"Robin Le Normand",team:"Atletico",pos:"DEF",price:8},
+  {id:152,name:"Javi Mendoza",team:"Atletico",pos:"DEF",price:7},
+  {id:153,name:"Johnny Cardoso",team:"Atletico",pos:"MID",price:8},
+  {id:154,name:"Koke",team:"Atletico",pos:"MID",price:8},
+  {id:155,name:"Pablo Barrios",team:"Atletico",pos:"MID",price:8},
+  {id:156,name:"Álex Baena",team:"Atletico",pos:"MID",price:9},
+  {id:157,name:"Marcos Llorente",team:"Atletico",pos:"MID",price:8},
+  {id:158,name:"Obed Vargas",team:"Atletico",pos:"MID",price:7},
+  {id:159,name:"Nicolò Rovella",team:"Atletico",pos:"MID",price:8},
+  {id:160,name:"Thiago Almada",team:"Atletico",pos:"MID",price:9},
+  {id:161,name:"Giuliano Simeone",team:"Atletico",pos:"MID",price:8},
+  {id:162,name:"Antoine Griezmann",team:"Atletico",pos:"FWD",price:10},
+  {id:163,name:"Alexander Sørloth",team:"Atletico",pos:"FWD",price:9},
+  {id:164,name:"Julián Álvarez",team:"Atletico",pos:"FWD",price:10},
+  {id:165,name:"Ademola Lookman",team:"Atletico",pos:"FWD",price:9},
+
+  {id:166,name:"Rui Silva",team:"Sporting",pos:"GK",price:8},
+  {id:167,name:"João Virgínia",team:"Sporting",pos:"GK",price:7},
+  {id:168,name:"Diego Callai",team:"Sporting",pos:"GK",price:6},
+  {id:169,name:"Francisco Silva",team:"Sporting",pos:"GK",price:6},
+  {id:170,name:"Zeno Debast",team:"Sporting",pos:"DEF",price:8},
+  {id:171,name:"Nuno Santos",team:"Sporting",pos:"DEF",price:7},
+  {id:172,name:"Georgios Vagiannidis",team:"Sporting",pos:"DEF",price:7},
+  {id:173,name:"Maxi Araújo",team:"Sporting",pos:"DEF",price:8},
+  {id:174,name:"Iván Fresneda",team:"Sporting",pos:"DEF",price:7},
+  {id:175,name:"Gonçalo Inácio",team:"Sporting",pos:"DEF",price:8},
+  {id:176,name:"Ousmane Diomande",team:"Sporting",pos:"DEF",price:8},
+  {id:177,name:"Eduardo Quaresma",team:"Sporting",pos:"DEF",price:7},
+  {id:178,name:"Ricardo Mangas",team:"Sporting",pos:"DEF",price:7},
+  {id:179,name:"Hidemasa Morita",team:"Sporting",pos:"MID",price:8},
+  {id:180,name:"Pedro Gonçalves",team:"Sporting",pos:"MID",price:9},
+  {id:181,name:"Giorgi Kochorashvili",team:"Sporting",pos:"MID",price:8},
+  {id:182,name:"Daniel Bragança",team:"Sporting",pos:"MID",price:7},
+  {id:183,name:"Morten Hjulmand",team:"Sporting",pos:"MID",price:9},
+  {id:184,name:"João Simões",team:"Sporting",pos:"MID",price:7},
+  {id:185,name:"Geovany Quenda",team:"Sporting",pos:"FWD",price:9},
+  {id:186,name:"Geny Catamo",team:"Sporting",pos:"FWD",price:8},
+  {id:187,name:"Souleymane Faye",team:"Sporting",pos:"FWD",price:7},
+  {id:188,name:"Francisco Trincão",team:"Sporting",pos:"FWD",price:9},
+  {id:189,name:"Luís Guilherme",team:"Sporting",pos:"FWD",price:7},
+  {id:190,name:"Fotis Ioannidis",team:"Sporting",pos:"FWD",price:8},
+  {id:191,name:"Luis Suárez",team:"Sporting",pos:"FWD",price:9}
+
+    ];
+
+    const PRICE_MIN_BOUND = Math.min(...players.map(p => p.price));
+    const PRICE_MAX_BOUND = Math.max(...players.map(p => p.price));
+    const POSITION_ORDER = { GK: 1, DEF: 2, MID: 3, FWD: 4 };
+
+    let selected = [];
+    let draftTeamName = "";
+    let teamName = "";
+    let starterIds = [];
+    let captain = null;
+    let totalPoints = 0;
+    let currentRound = 0;
+    let userLastRoundPoints = {};
+    let userPlayerTotalPoints = {};
+    let playersScrollTop = 0;
+    let swapSelection = null;
+    let viewedLeagueTeamId = null;
+    let currentUser = null;
+    let authMode = "login";
+    let creationTeamFilter = "ALL";
+    let creationPositionFilter = "ALL";
+    let creationSortBy = "DEFAULT";
+    let creationMinPrice = PRICE_MIN_BOUND;
+    let creationMaxPrice = PRICE_MAX_BOUND;
+    let activePlayerModalId = null;
+
+    const USERS_STORAGE_KEY = "fantazu_users_v1";
+    const SESSION_STORAGE_KEY = "fantazu_session_v1";
+
+    function getPlayer(id) {
+      return players.find(p => p.id === id);
+    }
+
+    function resetGameState() {
+      selected = [];
+      starterIds = [];
+      captain = null;
+      totalPoints = 0;
+      currentRound = 0;
+      userLastRoundPoints = {};
+      userPlayerTotalPoints = {};
+      playersScrollTop = 0;
+      swapSelection = null;
+      viewedLeagueTeamId = leagueTeams.length ? leagueTeams[0].id : null;
+      draftTeamName = currentUser ? currentUser.teamName : "";
+      teamName = "";
+      creationTeamFilter = "ALL";
+      creationPositionFilter = "ALL";
+      creationSortBy = "DEFAULT";
+      creationMinPrice = PRICE_MIN_BOUND;
+      creationMaxPrice = PRICE_MAX_BOUND;
+      activePlayerModalId = null;
+    }
+
+    function getStoredUsers() {
+      try {
+        return JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || "[]");
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveStoredUsers(users) {
+      localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
+    }
+
+    function getSessionEmail() {
+      return localStorage.getItem(SESSION_STORAGE_KEY) || "";
+    }
+
+    function setSessionEmail(email) {
+      localStorage.setItem(SESSION_STORAGE_KEY, email);
+    }
+
+    function clearSessionEmail() {
+      localStorage.removeItem(SESSION_STORAGE_KEY);
+    }
+
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function isStrongPassword(password) {
+      return /^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,}$/.test(password);
+    }
+
+    function setAuthMode(mode) {
+      authMode = mode;
+      renderAuth();
+    }
+
+    function showAuthMessage(message, type = "error") {
+      const el = document.getElementById("authMessage");
+      if (!el) return;
+      el.className = `auth-message ${type}`;
+      el.textContent = message;
+    }
+
+    function signupUser() {
+      const teamNameInput = document.getElementById("signupTeamName")?.value.trim() || "";
+      const birthDate = document.getElementById("signupBirthDate")?.value || "";
+      const email = (document.getElementById("signupEmail")?.value || "").trim().toLowerCase();
+      const password = document.getElementById("signupPassword")?.value || "";
+      const confirmPassword = document.getElementById("signupConfirmPassword")?.value || "";
+
+      if (!teamNameInput) return showAuthMessage("Enter your team name.");
+      if (!birthDate) return showAuthMessage("Enter your birth date.");
+      if (!isValidEmail(email)) return showAuthMessage("Enter a valid email address.");
+      if (!isStrongPassword(password)) return showAuthMessage("Password must be at least 8 characters and include 1 capital letter and 1 symbol.");
+      if (password !== confirmPassword) return showAuthMessage("Passwords do not match.");
+
+      const users = getStoredUsers();
+      if (users.some(user => user.email === email)) return showAuthMessage("An account with this email already exists.");
+
+      const newUser = { teamName: teamNameInput, birthDate, email, password };
+      users.push(newUser);
+      saveStoredUsers(users);
+      currentUser = newUser;
+      setSessionEmail(email);
+      resetGameState();
+      renderCreation();
+    }
+
+    function loginUser() {
+      const email = (document.getElementById("loginEmail")?.value || "").trim().toLowerCase();
+      const password = document.getElementById("loginPassword")?.value || "";
+
+      if (!isValidEmail(email)) return showAuthMessage("Enter a valid email address.");
+      if (!password) return showAuthMessage("Enter your password.");
+
+      const user = getStoredUsers().find(u => u.email === email && u.password === password);
+      if (!user) return showAuthMessage("Wrong email or password.");
+
+      currentUser = user;
+      setSessionEmail(email);
+      resetGameState();
+      renderCreation();
+    }
+
+    function logoutUser() {
+      currentUser = null;
+      clearSessionEmail();
+      resetGameState();
+      authMode = "login";
+      renderAuth();
+    }
+
+    function loadSessionUser() {
+      const email = getSessionEmail();
+      if (!email) return null;
+      return getStoredUsers().find(user => user.email === email) || null;
+    }
+
+    function renderAuth() {
+      const app = document.getElementById("app");
+      app.innerHTML = `
+        <div class="auth-wrap">
+          <div class="auth-card glass">
+            <h2 style="margin-bottom:6px;">Welcome to Fantazu</h2>
+            <div style="color:#bfdbfe;font-size:13px;margin-bottom:14px;">Login to continue or create a new account first.</div>
+
+            <div class="auth-tabs">
+              <div class="auth-tab ${authMode === "login" ? "active" : ""}" onclick="setAuthMode('login')">Login</div>
+              <div class="auth-tab ${authMode === "signup" ? "active" : ""}" onclick="setAuthMode('signup')">Sign Up</div>
+            </div>
+
+            ${authMode === "login" ? `
+              <div class="auth-grid">
+                <div>
+                  <label class="auth-label">Email</label>
+                  <input id="loginEmail" type="email" placeholder="you@example.com" />
+                </div>
+                <div>
+                  <label class="auth-label">Password</label>
+                  <input id="loginPassword" type="password" placeholder="Enter password" />
+                </div>
+                <button onclick="loginUser()">Login</button>
+              </div>
+            ` : `
+              <div class="auth-grid two">
+                <div>
+                  <label class="auth-label">Team Name</label>
+                  <input id="signupTeamName" type="text" placeholder="Enter team name" />
+                </div>
+                <div>
+                  <label class="auth-label">Birth Date</label>
+                  <input id="signupBirthDate" type="date" />
+                </div>
+              </div>
+              <div class="auth-grid" style="margin-top:12px;">
+                <div>
+                  <label class="auth-label">Email</label>
+                  <input id="signupEmail" type="email" placeholder="you@example.com" />
+                </div>
+                <div>
+                  <label class="auth-label">Password</label>
+                  <input id="signupPassword" type="password" placeholder="Minimum 8 characters, 1 capital, 1 symbol" />
+                </div>
+                <div>
+                  <label class="auth-label">Retype Password</label>
+                  <input id="signupConfirmPassword" type="password" placeholder="Retype password" />
+                </div>
+                <button onclick="signupUser()">Create Account</button>
+              </div>
+            `}
+
+            <div id="authMessage" class="auth-message"></div>
+            <div class="auth-note">This demo stores accounts in your browser only, so it is a front-end mock login and not a secure production auth system.</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderApp() {
+      if (!currentUser) {
+        renderAuth();
+        return;
+      }
+      if (!teamName.trim()) {
+        renderCreation();
+      } else {
+        renderMain();
+      }
+    }
+
+    function randomInt(max) {
+      return Math.floor(Math.random() * max);
+    }
+
+    function shuffle(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function spentBudget() {
+      return selected.reduce((sum, p) => sum + p.price, 0);
+    }
+
+    function countPos(pos) {
+      return selected.filter(p => p.pos === pos).length;
+    }
+
+    function countTeam(team, squadIds = null) {
+      if (!squadIds) return selected.filter(p => p.team === team).length;
+      return squadIds.map(getPlayer).filter(p => p.team === team).length;
+    }
+
+    function squadIsComplete() {
+      return (
+        selected.length === 15 &&
+        countPos("GK") === 2 &&
+        countPos("DEF") === 5 &&
+        countPos("MID") === 5 &&
+        countPos("FWD") === 3 &&
+        spentBudget() <= budget
+      );
+    }
+
+    function canSaveTeam() {
+      return squadIsComplete() && draftTeamName.trim() !== "";
+    }
+
+    function canAdd(player) {
+      if (countPos(player.pos) >= squadLimits[player.pos]) return false;
+      if (countTeam(player.team) >= maxPerTeam) return false;
+      if (spentBudget() + player.price > budget) return false;
+      return true;
+    }
+
+    function teamAbbr(team) {
+      const parts = team.split(" ").filter(Boolean);
+      if (parts.length === 1) return parts[0].slice(0, 3).toUpperCase();
+      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    }
+
+    function teamGradient(team) {
+      const style = teamStyle[team];
+      if (!style) return "linear-gradient(180deg, #3b82f6 0%, #1d4ed8 100%)";
+      return `linear-gradient(180deg, ${style.colors[0]} 0%, ${style.colors[1]} 100%)`;
+    }
+
+    function getTeamLogo(team) {
+      return teamStyle[team]?.logo || "";
+    }
+
+    function getSurname(name) {
+      const parts = name.trim().split(/\s+/);
+      if (parts.length <= 1) return name;
+      const prefixes = new Set(["da", "de", "del", "della", "der", "di", "dos", "das", "du", "el", "la", "le", "ter", "ten", "van", "von"]);
+      let surname = parts[parts.length - 1];
+      let i = parts.length - 2;
+      while (i >= 0 && prefixes.has(parts[i].toLowerCase())) {
+        surname = parts[i] + " " + surname;
+        i -= 1;
+      }
+      return surname;
+    }
+
+    function getCreationTeamOptions() {
+      return [...new Set(players.map(p => p.team))].sort((a, b) => a.localeCompare(b));
+    }
+
+    function getFilteredPlayers() {
+      let list = [...players].filter(p => p.price >= creationMinPrice && p.price <= creationMaxPrice);
+
+      if (creationPositionFilter !== "ALL") {
+        list = list.filter(p => p.pos === creationPositionFilter);
+      }
+
+      if (creationTeamFilter !== "ALL") {
+        list = list.filter(p => p.team === creationTeamFilter);
+      }
+
+      if (creationSortBy === "POSITION") {
+        list.sort((a, b) => (POSITION_ORDER[a.pos] - POSITION_ORDER[b.pos]) || a.name.localeCompare(b.name));
+      } else if (creationSortBy === "TEAM") {
+        list.sort((a, b) => a.team.localeCompare(b.team) || POSITION_ORDER[a.pos] - POSITION_ORDER[b.pos] || a.name.localeCompare(b.name));
+      } else if (creationSortBy === "PRICE_ASC") {
+        list.sort((a, b) => a.price - b.price || a.name.localeCompare(b.name));
+      } else if (creationSortBy === "PRICE_DESC") {
+        list.sort((a, b) => b.price - a.price || a.name.localeCompare(b.name));
+      }
+
+      return list;
+    }
+
+    function setCreationPositionFilter(value) {
+      creationPositionFilter = value;
+      renderCreation();
+    }
+
+    function setCreationTeamFilter(value) {
+      creationTeamFilter = value;
+      renderCreation();
+    }
+
+    function setCreationSortBy(value) {
+      creationSortBy = value;
+      renderCreation();
+    }
+
+    function setCreationMinPrice(value) {
+      creationMinPrice = Math.min(Number(value), creationMaxPrice);
+      renderCreation();
+    }
+
+    function setCreationMaxPrice(value) {
+      creationMaxPrice = Math.max(Number(value), creationMinPrice);
+      renderCreation();
+    }
+
+    function openPlayerModal(id) {
+      activePlayerModalId = id;
+      renderApp();
+    }
+
+    function closePlayerModal() {
+      activePlayerModalId = null;
+      renderApp();
+    }
+
+    function renderPlayerModal() {
+      if (!activePlayerModalId) return "";
+      const p = getPlayer(activePlayerModalId);
+      if (!p) return "";
+      const logo = getTeamLogo(p.team);
+
+      return `
+        <div class="player-modal-backdrop" onclick="closePlayerModal()">
+          <div class="player-modal-card glass" onclick="event.stopPropagation()">
+            <div class="player-modal-head">
+              <div>
+                <div style="display:flex;align-items:center;gap:10px;">
+                  ${logo ? `<img class="kit-logo-img" src="${logo}" alt="${p.team} logo" style="position:static;width:30px;height:30px;">` : ""}
+                  <div>
+                    <h3 style="margin:0 0 4px 0;">${p.name}</h3>
+                    <div style="color:#bfdbfe;font-size:13px;">${p.team}</div>
+                  </div>
+                </div>
+              </div>
+              <button class="danger-btn" onclick="closePlayerModal()">Close</button>
+            </div>
+
+            <div class="player-modal-grid">
+              <div class="player-modal-item"><strong>Surname</strong><span>${getSurname(p.name)}</span></div>
+              <div class="player-modal-item"><strong>Position</strong><span>${p.pos}</span></div>
+              <div class="player-modal-item"><strong>Price</strong><span>${p.price}M</span></div>
+              <div class="player-modal-item"><strong>Round Points</strong><span>${playerRound(p.id)} pts</span></div>
+              <div class="player-modal-item"><strong>Total Points</strong><span>${playerTotal(p.id)} pts</span></div>
+              <div class="player-modal-item"><strong>Team Count</strong><span>${countTeam(p.team)} / ${maxPerTeam}</span></div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function getSelectedByPos(pos) {
+      return selected.filter(p => p.pos === pos);
+    }
+
+    function getBenchPlayers() {
+      return selected.filter(p => !starterIds.includes(p.id));
+    }
+
+    function getBenchPlayersFromLineup(starters, squadIds) {
+      return squadIds.filter(id => !starters.includes(id));
+    }
+
+    function validateStarterLineup(ids) {
+      if (ids.length !== starterRules.total) return false;
+
+      const lineup = ids.map(getPlayer);
+      const gk = lineup.filter(p => p.pos === "GK").length;
+      const def = lineup.filter(p => p.pos === "DEF").length;
+      const mid = lineup.filter(p => p.pos === "MID").length;
+      const fwd = lineup.filter(p => p.pos === "FWD").length;
+
+      return (
+        gk === starterRules.GK &&
+        def >= starterRules.minDEF &&
+        mid >= starterRules.minMID &&
+        fwd >= starterRules.minFWD
+      );
+    }
+
+    function starterCounts(ids) {
+      const starters = ids.map(getPlayer);
+      return {
+        GK: starters.filter(p => p.pos === "GK").length,
+        DEF: starters.filter(p => p.pos === "DEF").length,
+        MID: starters.filter(p => p.pos === "MID").length,
+        FWD: starters.filter(p => p.pos === "FWD").length
+      };
+    }
+
+    function groupStartersByPos(ids) {
+      const starters = ids.map(getPlayer);
+      return {
+        FWD: starters.filter(p => p.pos === "FWD"),
+        MID: starters.filter(p => p.pos === "MID"),
+        DEF: starters.filter(p => p.pos === "DEF"),
+        GK: starters.filter(p => p.pos === "GK")
+      };
+    }
+
+    function playerRound(id) {
+      return userLastRoundPoints[id] || 0;
+    }
+
+    function playerTotal(id) {
+      return userPlayerTotalPoints[id] || 0;
+    }
+
+    function generateValidSquadIds() {
+      const byPos = {
+        GK: players.filter(p => p.pos === "GK"),
+        DEF: players.filter(p => p.pos === "DEF"),
+        MID: players.filter(p => p.pos === "MID"),
+        FWD: players.filter(p => p.pos === "FWD")
+      };
+
+      for (let attempt = 0; attempt < 300; attempt++) {
+        const squad = [];
+        const teamCounts = {};
+        let failed = false;
+
+        for (const pos of ["GK", "DEF", "MID", "FWD"]) {
+          const need = squadLimits[pos];
+          const pool = shuffle(byPos[pos]);
+          let picked = 0;
+
+          for (const player of pool) {
+            if (picked >= need) break;
+            if (squad.includes(player.id)) continue;
+            if ((teamCounts[player.team] || 0) >= maxPerTeam) continue;
+
+            squad.push(player.id);
+            teamCounts[player.team] = (teamCounts[player.team] || 0) + 1;
+            picked++;
+          }
+
+          if (picked < need) {
+            failed = true;
+            break;
+          }
+        }
+
+        if (!failed) return squad;
+      }
+
+      throw new Error("Could not generate a valid squad");
+    }
+
+    function pickValidStartersFromSquad(squadIds) {
+      const gks = shuffle(squadIds.filter(id => getPlayer(id).pos === "GK"));
+      const defs = shuffle(squadIds.filter(id => getPlayer(id).pos === "DEF"));
+      const mids = shuffle(squadIds.filter(id => getPlayer(id).pos === "MID"));
+      const fwds = shuffle(squadIds.filter(id => getPlayer(id).pos === "FWD"));
+
+      const validForms = possibleFormations.filter(f =>
+        defs.length >= f.DEF &&
+        mids.length >= f.MID &&
+        fwds.length >= f.FWD &&
+        gks.length >= 1
+      );
+
+      const formation = validForms[randomInt(validForms.length)];
+
+      return [
+        gks[0],
+        ...defs.slice(0, formation.DEF),
+        ...mids.slice(0, formation.MID),
+        ...fwds.slice(0, formation.FWD)
+      ];
+    }
+
+    function generateLeagueTeams() {
+      const names = ["North Stars", "Blue Orbit", "Iron Pulse", "Golden Eleven", "Emerald Wave"];
+
+      return names.map((name, index) => {
+        const squadIds = generateValidSquadIds();
+        const starterIds = pickValidStartersFromSquad(squadIds);
+        const captain = shuffle(starterIds)[0];
+
+        return {
+          id: "league-" + (index + 1),
+          name,
+          squadIds,
+          starterIds,
+          captain,
+          totalPoints: 0,
+          lastRoundPoints: {},
+          playerTotalPoints: {}
+        };
+      });
+    }
+
+    const leagueTeams = generateLeagueTeams();
+    if (leagueTeams.length) viewedLeagueTeamId = leagueTeams[0].id;
+    currentUser = loadSessionUser();
+    if (currentUser) draftTeamName = currentUser.teamName;
+
+    function getCreationWarning() {
+      if (draftTeamName.trim() === "") return "You must name your team.";
+      if (selected.length < 15) return "Select all 15 players.";
+      if (spentBudget() > budget) return "Budget exceeded.";
+      if (
+        countPos("GK") !== 2 ||
+        countPos("DEF") !== 5 ||
+        countPos("MID") !== 5 ||
+        countPos("FWD") !== 3
+      ) return "Your squad must be exactly 2 GK, 5 DEF, 5 MID, 3 FWD.";
+      return "";
+    }
+
+    function updateCreationControls() {
+      const saveBtn = document.getElementById("saveTeamBtn");
+      const warningEl = document.getElementById("creationWarning");
+      if (saveBtn) saveBtn.disabled = !canSaveTeam();
+      if (warningEl) warningEl.textContent = getCreationWarning();
+    }
+
+    function handleTeamNameInput(value) {
+      draftTeamName = value;
+      updateCreationControls();
+    }
+
+    function buildDefaultStarters() {
+      const gk = getSelectedByPos("GK").slice(0, 1);
+      const def = getSelectedByPos("DEF").slice(0, 4);
+      const mid = getSelectedByPos("MID").slice(0, 4);
+      const fwd = getSelectedByPos("FWD").slice(0, 2);
+      return [...gk, ...def, ...mid, ...fwd].map(p => p.id);
+    }
+
+    function togglePlayer(id) {
+      const list = document.getElementById("playersList");
+      if (list) playersScrollTop = list.scrollTop;
+
+      const player = getPlayer(id);
+      const isSelected = selected.some(p => p.id === id);
+
+      if (isSelected) {
+        selected = selected.filter(p => p.id !== id);
+      } else {
+        if (!canAdd(player)) return;
+        selected.push(player);
+      }
+
+      renderCreation();
+    }
+
+    function removeSelectedPlayer(id) {
+      selected = selected.filter(p => p.id !== id);
+      renderCreation();
+    }
+
+    function renderCreationSlots(pos, limit) {
+      const list = getSelectedByPos(pos);
+
+      return Array.from({ length: limit }, (_, i) => {
+        const p = list[i];
+        if (!p) {
+          return `<div class="slot"><span class="slot-empty">Empty ${pos} slot ${i + 1}</span></div>`;
+        }
+
+        return `
+          <div class="slot filled">
+            <div>
+              <strong>${p.name}</strong><br>
+              <span style="font-size:13px;color:#bfdbfe;">${p.team}</span>
+            </div>
+            <div class="slot-actions">
+              <span>${p.price}M</span>
+              <button class="slot-remove" onclick="removeSelectedPlayer(${p.id})">Remove</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderCreation() {
+      const isTransferMode = teamName.trim() !== "";
+      const title = isTransferMode ? "Transfer Mode" : "Create Team";
+      const buttonLabel = isTransferMode ? "Update Team" : "Save Team";
+      const app = document.getElementById("app");
+      const filteredPlayers = getFilteredPlayers();
+      const teamOptions = getCreationTeamOptions();
+
+      app.innerHTML = `
+        <div class="top-bar">
+          <h2 style="margin:0;">${title}</h2>
+          ${currentUser ? `<div style="color:#bfdbfe;font-size:13px;">${currentUser.email}</div>` : ""}
+          ${isTransferMode ? `<button class="secondary-btn" onclick="renderMain()">Back to Team</button>` : ""}
+          ${currentUser ? `<button class="danger-btn" onclick="logoutUser()">Log Out</button>` : ""}
+        </div>
+
+        <div class="top-bar">
+          <input
+            id="teamNameInput"
+            placeholder="Enter team name"
+            value="${draftTeamName.replace(/"/g, "&quot;")}"
+            oninput="handleTeamNameInput(this.value)"
+          />
+          <button id="saveTeamBtn" onclick="saveTeam()" ${canSaveTeam() ? "" : "disabled"}>${buttonLabel}</button>
+        </div>
+
+        <div class="summary tight-summary">
+          <div class="summary-box glass"><strong>Budget</strong><span>${budget - spentBudget()}M</span></div>
+          <div class="summary-box glass"><strong>Picked</strong><span>${selected.length}/15</span></div>
+          <div class="summary-box glass"><strong>GK</strong><span>${countPos("GK")}/2</span></div>
+          <div class="summary-box glass"><strong>DEF</strong><span>${countPos("DEF")}/5</span></div>
+          <div class="summary-box glass"><strong>MID</strong><span>${countPos("MID")}/5</span></div>
+          <div class="summary-box glass"><strong>FWD</strong><span>${countPos("FWD")}/3</span></div>
+        </div>
+
+        <div class="layout">
+          <div class="panel glass">
+            <div class="panel-header">
+              <div>
+                <h3 style="margin-bottom:4px;">Choose Players</h3>
+                <div style="color:#bfdbfe;font-size:13px;">Filter by position, team, and price. Click a selected player again to remove him.</div>
+              </div>
+            </div>
+
+            <div class="filter-wrap">
+              <div class="filter-grid">
+                <div class="filter-box">
+                  <label class="filter-label">Filter Position</label>
+                  <select onchange="setCreationPositionFilter(this.value)">
+                    <option value="ALL" ${creationPositionFilter === "ALL" ? "selected" : ""}>All Positions</option>
+                    <option value="GK" ${creationPositionFilter === "GK" ? "selected" : ""}>GK</option>
+                    <option value="DEF" ${creationPositionFilter === "DEF" ? "selected" : ""}>DEF</option>
+                    <option value="MID" ${creationPositionFilter === "MID" ? "selected" : ""}>MID</option>
+                    <option value="FWD" ${creationPositionFilter === "FWD" ? "selected" : ""}>FWD</option>
+                  </select>
+                </div>
+                <div class="filter-box">
+                  <label class="filter-label">Filter Team</label>
+                  <select onchange="setCreationTeamFilter(this.value)">
+                    <option value="ALL" ${creationTeamFilter === "ALL" ? "selected" : ""}>All Teams</option>
+                    ${teamOptions.map(team => `<option value="${team}" ${creationTeamFilter === team ? "selected" : ""}>${team}</option>`).join("")}
+                  </select>
+                </div>
+                <div class="filter-box">
+                  <label class="filter-label">Sort Players</label>
+                  <select onchange="setCreationSortBy(this.value)">
+                    <option value="DEFAULT" ${creationSortBy === "DEFAULT" ? "selected" : ""}>Default</option>
+                    <option value="POSITION" ${creationSortBy === "POSITION" ? "selected" : ""}>By Position</option>
+                    <option value="TEAM" ${creationSortBy === "TEAM" ? "selected" : ""}>By Team</option>
+                    <option value="PRICE_ASC" ${creationSortBy === "PRICE_ASC" ? "selected" : ""}>Price Low → High</option>
+                    <option value="PRICE_DESC" ${creationSortBy === "PRICE_DESC" ? "selected" : ""}>Price High → Low</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="range-box">
+                <div class="range-head">
+                  <strong style="margin:0;color:#bfdbfe;font-size:11px;letter-spacing:0.35px;text-transform:uppercase;">Price Range</strong>
+                  <span>${creationMinPrice}M - ${creationMaxPrice}M</span>
+                </div>
+                <div class="range-sliders">
+                  <div class="range-slider-stack">
+                    <div class="range-track"></div>
+                    <input type="range" min="${PRICE_MIN_BOUND}" max="${PRICE_MAX_BOUND}" step="1" value="${creationMinPrice}" oninput="setCreationMinPrice(this.value)">
+                    <input type="range" min="${PRICE_MIN_BOUND}" max="${PRICE_MAX_BOUND}" step="1" value="${creationMaxPrice}" oninput="setCreationMaxPrice(this.value)">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="players" id="playersList">
+              ${filteredPlayers.length ? filteredPlayers.map(p => {
+                const isSelected = selected.some(s => s.id === p.id);
+                const disabled = !isSelected && !canAdd(p);
+
+                return `
+                  <div class="player-row ${isSelected ? "selected" : ""} ${disabled ? "disabled" : ""}" onclick="togglePlayer(${p.id})">
+                    <div class="player-left">
+                      <div class="player-name">${p.name}</div>
+                      <div class="player-meta">
+                        <span class="pill">${teamAbbr(p.team)} • ${p.team}</span>
+                        <span class="pill">${p.pos} ${countPos(p.pos)}/${squadLimits[p.pos]}</span>
+                      </div>
+                    </div>
+                    <div><strong>${p.price}M</strong></div>
+                  </div>
+                `;
+              }).join("") : `<div class="empty-state">No players match the current filters.</div>`}
+            </div>
+
+            <div class="note">
+              Rules: exactly 2 GK, 5 DEF, 5 MID, 3 FWD. Maximum ${maxPerTeam} players from one club.
+            </div>
+          </div>
+
+          <div class="panel glass">
+            <div class="panel-header">
+              <div>
+                <h3 style="margin-bottom:4px;">My Team</h3>
+                <div style="color:#bfdbfe;font-size:13px;">You can also remove players from here.</div>
+              </div>
+              <div style="font-weight:800;">${selected.length}/15</div>
+            </div>
+
+            <div class="squad-groups">
+              <div class="pos-group">
+                <h4>Goalkeepers ${countPos("GK")}/2</h4>
+                ${renderCreationSlots("GK", 2)}
+              </div>
+              <div class="pos-group">
+                <h4>Defenders ${countPos("DEF")}/5</h4>
+                ${renderCreationSlots("DEF", 5)}
+              </div>
+              <div class="pos-group">
+                <h4>Midfielders ${countPos("MID")}/5</h4>
+                ${renderCreationSlots("MID", 5)}
+              </div>
+              <div class="pos-group">
+                <h4>Forwards ${countPos("FWD")}/3</h4>
+                ${renderCreationSlots("FWD", 3)}
+              </div>
+            </div>
+
+            <div id="creationWarning" class="warning">${getCreationWarning()}</div>
+          </div>
+        </div>
+
+        ${renderPlayerModal()}
+      `;
+
+      const playersList = document.getElementById("playersList");
+      if (playersList) {
+        playersList.scrollTop = playersScrollTop;
+        playersList.addEventListener("scroll", function () {
+          playersScrollTop = this.scrollTop;
+        });
+      }
+    }
+
+    function saveTeam() {
+      if (!draftTeamName.trim()) {
+        alert("Please enter a team name.");
+        return;
+      }
+
+      if (!squadIsComplete()) {
+        alert("Complete a valid 15-player squad first.");
+        return;
+      }
+
+      teamName = draftTeamName.trim();
+      starterIds = buildDefaultStarters();
+
+      if (captain && !starterIds.includes(captain)) captain = null;
+      swapSelection = null;
+      renderMain();
+    }
+
+    function setCaptain(value) {
+      captain = value ? Number(value) : null;
+      renderMain();
+    }
+
+    function clearSwapSelection() {
+      swapSelection = null;
+    }
+
+    function attemptStarterBenchSwap(starterId, benchId) {
+      const newStarterIds = starterIds.map(id => id === starterId ? benchId : id);
+
+      if (!validateStarterLineup(newStarterIds)) {
+        alert("Invalid lineup. You must keep exactly 1 GK, min 3 DEF, min 2 MID, min 1 FWD.");
+        return;
+      }
+
+      starterIds = newStarterIds;
+
+      if (captain && !starterIds.includes(captain)) captain = null;
+
+      clearSwapSelection();
+      renderMain();
+    }
+
+    function clickStarterCard(id) {
+      if (!swapSelection) {
+        swapSelection = { section: "starter", id };
+        renderMain();
+        return;
+      }
+
+      if (swapSelection.section === "starter") {
+        if (swapSelection.id === id) clearSwapSelection();
+        else swapSelection = { section: "starter", id };
+        renderMain();
+        return;
+      }
+
+      if (swapSelection.section === "bench") {
+        attemptStarterBenchSwap(id, swapSelection.id);
+      }
+    }
+
+    function clickBenchCard(id) {
+      if (!swapSelection) {
+        swapSelection = { section: "bench", id };
+        renderMain();
+        return;
+      }
+
+      if (swapSelection.section === "bench") {
+        if (swapSelection.id === id) clearSwapSelection();
+        else swapSelection = { section: "bench", id };
+        renderMain();
+        return;
+      }
+
+      if (swapSelection.section === "starter") {
+        attemptStarterBenchSwap(swapSelection.id, id);
+      }
+    }
+
+    function generateBaseRoundPointsForPlayer(player) {
+      const appearance = 2;
+      const goals = Math.floor(Math.random() * 3);
+      const assists = Math.floor(Math.random() * 3);
+      let points = appearance + goals * 5 + assists * 3;
+
+      if (player.pos === "GK" || player.pos === "DEF") {
+        points += Math.floor(Math.random() * 3);
+      }
+
+      return points;
+    }
+
+    function simulateMatchday() {
+      if (!captain || !starterIds.includes(captain)) {
+        alert("Please choose a captain from your starting lineup.");
+        return;
+      }
+
+      currentRound++;
+
+      const baseRoundPoints = {};
+      players.forEach(p => {
+        baseRoundPoints[p.id] = generateBaseRoundPointsForPlayer(p);
+      });
+
+      selected.forEach(p => {
+        userLastRoundPoints[p.id] = baseRoundPoints[p.id];
+      });
+
+      let roundTotal = 0;
+      starterIds.forEach(id => {
+        let pts = baseRoundPoints[id];
+        if (id === captain) pts *= 2;
+
+        userLastRoundPoints[id] = pts;
+        userPlayerTotalPoints[id] = (userPlayerTotalPoints[id] || 0) + pts;
+        roundTotal += pts;
+      });
+      totalPoints += roundTotal;
+
+      leagueTeams.forEach(team => {
+        team.lastRoundPoints = {};
+        team.squadIds.forEach(id => {
+          team.lastRoundPoints[id] = baseRoundPoints[id];
+        });
+
+        let teamRoundTotal = 0;
+        team.starterIds.forEach(id => {
+          let pts = baseRoundPoints[id];
+          if (id === team.captain) pts *= 2;
+
+          team.lastRoundPoints[id] = pts;
+          team.playerTotalPoints[id] = (team.playerTotalPoints[id] || 0) + pts;
+          teamRoundTotal += pts;
+        });
+
+        team.totalPoints += teamRoundTotal;
+      });
+
+      renderMain();
+    }
+
+    function kitCardHTML(player, options = {}) {
+      const {
+        clickable = false,
+        selectedSwap = false,
+        onClick = "",
+        showC = false,
+        roundPoints = 0,
+        crossedRound = false,
+        actionHtml = "",
+        useSurname = false
+      } = options;
+
+      const logo = getTeamLogo(player.team);
+      const displayName = useSurname ? getSurname(player.name) : player.name;
+
+      return `
+        <div class="kit-card ${clickable ? "clickable" : ""} ${selectedSwap ? "selected-swap" : ""}" ${onClick ? `onclick="${onClick}"` : ""}>
+          <div class="kit-shell">
+            <div class="shirt-top" style="background:${teamGradient(player.team)};">
+              <div class="shirt-collar"></div>
+              ${logo ? `<img class="kit-logo-img" src="${logo}" alt="${player.team} logo">` : ""}
+              ${showC ? `<div class="badge-c">C</div>` : ""}
+            </div>
+            <div class="kit-body">
+              <div class="kit-name">${displayName}</div>
+              <div class="kit-team">${player.team}</div>
+              <div class="kit-stats">
+                ${player.pos}<br>
+                <span class="${crossedRound ? "bench-crossed" : ""}">Round: ${roundPoints} pts</span>
+              </div>
+              ${actionHtml}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function viewLeagueTeam(id) {
+      viewedLeagueTeamId = viewedLeagueTeamId === id ? null : id;
+      renderMain();
+    }
+
+    function renderLeagueTeamViewer(team) {
+      const grouped = groupStartersByPos(team.starterIds);
+      const benchIds = getBenchPlayersFromLineup(team.starterIds, team.squadIds);
+
+      return `
+        <div class="viewer-wrap">
+          <div class="viewer-box glass">
+            <div class="panel-header">
+              <div>
+                <h3 style="margin-bottom:4px;">${team.name} Squad</h3>
+                <div style="color:#bfdbfe;font-size:13px;">Total points: ${team.totalPoints}</div>
+              </div>
+            </div>
+
+            <div class="field-outer" style="margin-top:0;">
+              <div class="pitch-wrap">
+                <div class="pitch-lines"></div>
+                <div class="pitch-half-line"></div>
+                <div class="pitch-center-circle"></div>
+                <div class="pitch-center-dot"></div>
+                <div class="pitch-box-top"></div>
+                <div class="pitch-box-bottom"></div>
+
+                <div class="pitch-layout">
+                  <div class="pitch-row">
+                    ${grouped.FWD.map(p => kitCardHTML(p, {
+                      clickable: true,
+                      onClick: `openPlayerModal(${p.id})`,
+                      showC: team.captain === p.id,
+                      roundPoints: team.lastRoundPoints[p.id] || 0,
+                      useSurname: true
+                    })).join("")}
+                  </div>
+
+                  <div class="pitch-row">
+                    ${grouped.MID.map(p => kitCardHTML(p, {
+                      clickable: true,
+                      onClick: `openPlayerModal(${p.id})`,
+                      showC: team.captain === p.id,
+                      roundPoints: team.lastRoundPoints[p.id] || 0,
+                      useSurname: true
+                    })).join("")}
+                  </div>
+
+                  <div class="pitch-row">
+                    ${grouped.DEF.map(p => kitCardHTML(p, {
+                      clickable: true,
+                      onClick: `openPlayerModal(${p.id})`,
+                      showC: team.captain === p.id,
+                      roundPoints: team.lastRoundPoints[p.id] || 0,
+                      useSurname: true
+                    })).join("")}
+                  </div>
+
+                  <div class="pitch-row">
+                    ${grouped.GK.map(p => kitCardHTML(p, {
+                      clickable: true,
+                      onClick: `openPlayerModal(${p.id})`,
+                      showC: team.captain === p.id,
+                      roundPoints: team.lastRoundPoints[p.id] || 0,
+                      useSurname: true
+                    })).join("")}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bench-wrap">
+              <div class="formation-box glass">
+                <h3 style="margin-bottom:10px;">Bench</h3>
+                <div class="bench-grid">
+                  ${benchIds.map(id => {
+                    const p = getPlayer(id);
+                    return kitCardHTML(p, {
+                      clickable: true,
+                      onClick: `openPlayerModal(${p.id})`,
+                      showC: team.captain === p.id,
+                      roundPoints: team.lastRoundPoints[p.id] || 0,
+                      crossedRound: true,
+                      useSurname: true
+                    });
+                  }).join("")}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderMain() {
+      if (!teamName.trim()) {
+        renderCreation();
+        return;
+      }
+
+      const grouped = groupStartersByPos(starterIds);
+      const bench = getBenchPlayers();
+      const counts = starterCounts(starterIds);
+      const viewedTeam = leagueTeams.find(t => t.id === viewedLeagueTeamId) || null;
+
+      const leagueRows = [
+        { id: "you", name: teamName, points: totalPoints, isUser: true },
+        ...leagueTeams.map(t => ({ id: t.id, name: t.name, points: t.totalPoints, isUser: false }))
+      ].sort((a, b) => b.points - a.points);
+
+      document.getElementById("app").innerHTML = `
+        <div class="top-bar">
+          <h2 style="margin:0;">${teamName}</h2>
+          <button class="secondary-btn" onclick="renderCreation()">Transfer Mode</button>
+          <button onclick="simulateMatchday()">Simulate Matchday</button>
+          ${currentUser ? `<button class="danger-btn" onclick="logoutUser()">Log Out</button>` : ""}
+        </div>
+
+        <div class="summary">
+          <div class="summary-box glass"><strong>Total Points</strong><span>${totalPoints}</span></div>
+          <div class="summary-box glass"><strong>Budget Used</strong><span>${spentBudget()}M</span></div>
+          <div class="summary-box glass"><strong>Round</strong><span>${currentRound}</span></div>
+          <div class="summary-box glass"><strong>Captain</strong><span>${captain && starterIds.includes(captain) ? getPlayer(captain).name : "None"}</span></div>
+          <div class="summary-box glass"><strong>Starters</strong><span>${starterIds.length}/11</span></div>
+        </div>
+
+        <div class="controls-box glass">
+          <div class="top-bar" style="margin-bottom:10px;">
+            <select onchange="setCaptain(this.value)">
+              <option value="">Select Captain</option>
+              ${starterIds.map(id => {
+                const p = getPlayer(id);
+                return `<option value="${p.id}" ${captain === p.id ? "selected" : ""}>${p.name} (${p.team})</option>`;
+              }).join("")}
+            </select>
+
+            <button class="secondary-btn" onclick="clearSwapSelection(); renderMain();">Clear Swap Selection</button>
+          </div>
+
+          <div class="helper-line">
+            Click a player's card to open full details. Use the Swap button on a starter and then on a bench player to swap them.<br>
+            Formation rules: exactly 1 GK, minimum 3 DEF, minimum 2 MID, minimum 1 FWD.<br>
+            Current XI: GK ${counts.GK}, DEF ${counts.DEF}, MID ${counts.MID}, FWD ${counts.FWD}.<br>
+            Captain gets double points. Bench players do not score.
+            ${swapSelection ? `<br><strong>Selected for swap:</strong> ${getPlayer(swapSelection.id).name} (${swapSelection.section})` : ""}
+          </div>
+        </div>
+
+        <div class="field-outer">
+          <div class="pitch-wrap">
+            <div class="pitch-lines"></div>
+            <div class="pitch-half-line"></div>
+            <div class="pitch-center-circle"></div>
+            <div class="pitch-center-dot"></div>
+            <div class="pitch-box-top"></div>
+            <div class="pitch-box-bottom"></div>
+
+            <div class="pitch-layout">
+              <div class="pitch-row">
+                ${grouped.FWD.map(p => kitCardHTML(p, {
+                  clickable: true,
+                  selectedSwap: swapSelection && swapSelection.section === "starter" && swapSelection.id === p.id,
+                  onClick: `openPlayerModal(${p.id})`,
+                  showC: captain === p.id,
+                  roundPoints: playerRound(p.id),
+                  useSurname: true,
+                  actionHtml: `<button class="card-action-btn" onclick="event.stopPropagation(); clickStarterCard(${p.id})">Swap</button>`
+                })).join("")}
+              </div>
+
+              <div class="pitch-row">
+                ${grouped.MID.map(p => kitCardHTML(p, {
+                  clickable: true,
+                  selectedSwap: swapSelection && swapSelection.section === "starter" && swapSelection.id === p.id,
+                  onClick: `openPlayerModal(${p.id})`,
+                  showC: captain === p.id,
+                  roundPoints: playerRound(p.id),
+                  useSurname: true,
+                  actionHtml: `<button class="card-action-btn" onclick="event.stopPropagation(); clickStarterCard(${p.id})">Swap</button>`
+                })).join("")}
+              </div>
+
+              <div class="pitch-row">
+                ${grouped.DEF.map(p => kitCardHTML(p, {
+                  clickable: true,
+                  selectedSwap: swapSelection && swapSelection.section === "starter" && swapSelection.id === p.id,
+                  onClick: `openPlayerModal(${p.id})`,
+                  showC: captain === p.id,
+                  roundPoints: playerRound(p.id),
+                  useSurname: true,
+                  actionHtml: `<button class="card-action-btn" onclick="event.stopPropagation(); clickStarterCard(${p.id})">Swap</button>`
+                })).join("")}
+              </div>
+
+              <div class="pitch-row">
+                ${grouped.GK.map(p => kitCardHTML(p, {
+                  clickable: true,
+                  selectedSwap: swapSelection && swapSelection.section === "starter" && swapSelection.id === p.id,
+                  onClick: `openPlayerModal(${p.id})`,
+                  showC: captain === p.id,
+                  roundPoints: playerRound(p.id),
+                  useSurname: true,
+                  actionHtml: `<button class="card-action-btn" onclick="event.stopPropagation(); clickStarterCard(${p.id})">Swap</button>`
+                })).join("")}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bench-wrap">
+          <div class="formation-box glass">
+            <h3 style="margin-bottom:10px;">Bench</h3>
+            <div class="bench-grid">
+              ${bench.map(p => kitCardHTML(p, {
+                clickable: true,
+                selectedSwap: swapSelection && swapSelection.section === "bench" && swapSelection.id === p.id,
+                onClick: `openPlayerModal(${p.id})`,
+                showC: captain === p.id,
+                roundPoints: playerRound(p.id),
+                crossedRound: true,
+                useSurname: true,
+                actionHtml: `<button class="card-action-btn" onclick="event.stopPropagation(); clickBenchCard(${p.id})">Swap</button>`
+              })).join("")}
+            </div>
+          </div>
+        </div>
+
+        <div class="league-wrap">
+          <div class="league-box glass">
+            <div class="panel-header">
+              <div>
+                <h3 style="margin-bottom:4px;">League Table</h3>
+                <div style="color:#bfdbfe;font-size:13px;">All teams start at 0. Only starters score after matchday.</div>
+              </div>
+            </div>
+
+            <div class="league-list">
+              ${leagueRows.map((row, index) => `
+                <div class="league-team-row ${!row.isUser && row.id === viewedLeagueTeamId ? "active" : ""}">
+                  <div><div class="league-team-name">${index + 1}. ${row.name}</div></div>
+                  <div class="league-team-points">${row.points} pts</div>
+                  <div>${row.isUser ? `<span style="color:#bfdbfe;font-size:13px;">Your team</span>` : `<button class="secondary-btn" onclick="viewLeagueTeam('${row.id}')">${row.id === viewedLeagueTeamId ? "Close Squad" : "View Squad"}</button>`}</div>
+                </div>
+                ${!row.isUser && row.id === viewedLeagueTeamId && viewedTeam ? renderLeagueTeamViewer(viewedTeam) : ""}
+              `).join("")}
+            </div>
+          </div>
+        </div>
+
+        ${renderPlayerModal()}
+      `;
+    }
+
+    renderApp();
+  </script>
+</body>
+</html>
